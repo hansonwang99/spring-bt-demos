@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>chat</title>
+    <style type="text/css">
+        .card-container-message {
+            margin: 10px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/mdui/0.3.0/css/mdui.min.css">
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-pink">
+
+<div class="mdui-container">
+    <div class="mdui-toolbar mdui-color-theme">
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">menu</i></a>
+        <span class="mdui-typo-title">Chat</span>
+        <div class="mdui-toolbar-spacer"></div>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">refresh</i></a>
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">more_vert</i></a>
+    </div>
+</div>
+
+<div>
+    <div class="mdui-container container_text">
+
+        <div class="mdui-row">
+            <div class="mdui-col-xs-12 mdui-col-sm-8">
+                <div class="mdui-col-xs-12 mdui-col-sm-8">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">textsms</i>
+                        <label class="mdui-textfield-label">Message</label>
+                        <textarea class="mdui-textfield-input chat-message"></textarea>
+
+
+                    </div>
+                    <div class="mdui-container" style="padding:20px 40px">
+                        <button class="mdui-btn mdui-color-theme-accent mdui-ripple send-message">发送</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mdui-col-xs-6 mdui-col-sm-4 " style="padding:10px 0">
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon mdui-color-blue"><i class="mdui-icon material-icons">face</i></span>
+                    <span class="mdui-chip-title">总人数</span>
+                </div>
+
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon mdui-color-blue"><i class="mdui-icon material-icons">&#xe420;</i></span>
+                    <span class="mdui-chip-title chat-num">0</span>
+                </div>
+                <div class="message-container">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="http://cdn.bootcss.com/mdui/0.3.0/js/mdui.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/1.12.1/jquery.js"></script>
+
+<script type="text/template" class="package-price-template" id="message-template">
+    <div class="mdui-card card-container-message">
+        <div class="mdui-card-primary">
+            <div class="mdui-card-content message-content"></div>
+        </div>
+    </div>
+</script>
+
+<script type="application/javascript">
+    var websocket = null;
+    var cahtNum = $('.chat-num').text();
+    if ('WebSocket' in window) {
+        websocket = new WebSocket('ws://localhost:8080/chat/webSocket');
+
+    } else {
+        alert('该浏览器不支持websocket');
+    }
+
+    websocket.onopen = function (event) {
+        console.log('websocket建立连接');
+    }
+
+    websocket.onclose = function (event) {
+        console.log('websocket关闭连接');
+    }
+
+    websocket.onmessage = function (event) {
+        console.log('websocket收到消息' + event.data);
+        var result = $.parseJSON(event.data);
+        if (result.type == 3) {
+            var element = document.getElementById('message-template').innerHTML;
+            $('.message-container').append(element);
+            $(".message-content:last").html(result.message);
+        }
+        else {
+            $('.chat-num').text(result.userNum);
+        }
+
+    }
+
+    websocket.onerror = function (event) {
+        console.log('websocket通信发生错误');
+
+    }
+
+    window.onbeforeunload = function (event) {
+        websocket.close();
+    }
+
+    $('.send-message').click(function () {
+        var message = $('.chat-message').val();
+        if (message == "") {
+            mdui.alert('请输入要发送的消息');
+            return;
+        }
+        sendmessage(message);
+        $('.chat-message').val("");
+    })
+
+    function sendmessage(message) {
+        websocket.send(message);
+
+    }
+</script>
+
+</body>
+</html>
+
+
