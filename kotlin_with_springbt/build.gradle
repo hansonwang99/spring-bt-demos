@@ -1,7 +1,7 @@
 group 'com.hansonwang99'
 version '1.0-SNAPSHOT'
 
-buildscript {
+buildscript { 
     ext.kotlin_version = '1.1.1'
     ext.springboot_version = '1.5.2.RELEASE'
 
