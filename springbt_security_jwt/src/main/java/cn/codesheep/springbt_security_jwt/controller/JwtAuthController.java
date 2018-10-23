@@ -19,13 +19,13 @@ public class JwtAuthController {
     @RequestMapping(value = "/authentication/login", method = RequestMethod.POST)
     public ResponseEntity<?> createToken( String username,String password ) throws AuthenticationException {
 
-        final String token = authService.login(username,password);
+        final String token = authService.login( username, password );
 
         // Return the token
         return ResponseEntity.ok( token );
     }
 
-    @RequestMapping(value = "auth/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/authentication/register", method = RequestMethod.POST)
     public User register( @RequestBody User addedUser ) throws AuthenticationException {
         return authService.register(addedUser);
     }

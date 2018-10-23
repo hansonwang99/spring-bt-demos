@@ -18,12 +18,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
     private UserRepository userRepository;
-
-
 
     @Override
     public User register( User userToAdd ) {

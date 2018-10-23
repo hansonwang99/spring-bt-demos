@@ -1,10 +1,10 @@
 package cn.codesheep.springbt_security_jwt.util;
 
+import cn.codesheep.springbt_security_jwt.comm.Const;
 import cn.codesheep.springbt_security_jwt.model.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +20,6 @@ public class JwtTokenUtil implements Serializable {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_CREATED = "created";
-
-    @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.expiration}")
-    private Long expiration;
 
     public String getUsernameFromToken(String token) {
         String username;
@@ -64,7 +58,7 @@ public class JwtTokenUtil implements Serializable {
         Claims claims;
         try {
             claims = Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey( Const.SECRET )
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
@@ -74,7 +68,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     private Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + expiration * 1000);
+        return new Date(System.currentTimeMillis() + Const.EXPIRATION_TIME * 1000);
     }
 
     private Boolean isTokenExpired(String token) {
@@ -97,7 +91,7 @@ public class JwtTokenUtil implements Serializable {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(generateExpirationDate())
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, Const.SECRET )
                 .compact();
     }
 
