@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.codesheep.springbt_jwt_mybatis.mapper.AuthMapper">
+  <resultMap id="baseUserInfoMap" type="cn.codesheep.springbt_jwt_mybatis.entity.User">
+         <id property="userId" column="user_id" javaType="java.lang.Long"></id>
+         <result property="userName" column="user_name" javaType="java.lang.String"></result>
+         <result property="password" column="password" javaType="java.lang.String"></result>
+         <result property="createdTime" column="created_time" javaType="java.lang.String"></result>
+         <collection property="roles" ofType="cn.codesheep.springbt_jwt_mybatis.entity.Role">
+            <id property="roleId" column="role_id" javaType="java.lang.Long"/>
+            <result property="roleCode" column="role_code" javaType="java.lang.String"/>
+            <result property="roleName" column="role_name" javaType="java.lang.String"/>
+            <result property="roleDes" column="role_des" javaType="java.lang.String"/>
+            <collection property="auths" ofType="cn.codesheep.springbt_jwt_mybatis.entity.Authority">
+                <id property="authId" column="auth_id" javaType="java.lang.Long"/>
+            	<result property="authCode" column="auth_code" javaType="java.lang.String"/>
+            	<result property="authName" column="auth_name" javaType="java.lang.String"/>
+            	<result property="authDes" column="auth_des" javaType="java.lang.String"/>
+            </collection>
+        </collection>
+   </resultMap>
+
+     <select id="findByUsername" parameterType="string" resultMap="baseUserInfoMap">
+        SELECT u.*,r.*,p.* FROM cs_user u left join cs_user_role ur on ur.user_id=u.user_id
+        left join cs_role r on r.role_id=ur.role_id
+        left join cs_role_auth pr on pr.role_id=r.role_id
+        left join cs_authority p on pr.auth_id=p.auth_id
+        WHERE user_name=#{name};
+     </select>
+
+ </mapper> 

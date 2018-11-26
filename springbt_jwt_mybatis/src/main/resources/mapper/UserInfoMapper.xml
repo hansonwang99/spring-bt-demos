@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.codesheep.springbt_jwt_mybatis.mapper.UserInfoMapper">
+  <resultMap id="baseUserInfoMap" type="cn.codesheep.springbt_jwt_mybatis.entity.UserInfo">
+         <id property="userId" column="user_id" javaType="java.lang.Long"></id>
+         <result property="userName" column="user_name" javaType="java.lang.String"></result>
+         <result property="password" column="password" javaType="java.lang.String"></result>
+         <result property="createdTime" column="created_time" javaType="java.lang.String"></result>
+  </resultMap> 
+ 
+    <insert id="addUser" useGeneratedKeys="false" keyProperty="id">
+        insert into cs_user (user_name,password,created_time) values (#{userName},#{password},#{createdTime})
+    </insert>
+
+    <select id="getUserById"  resultMap="baseUserInfoMap" parameterType="java.lang.Long" >
+        select * from cs_user u  where u.user_id = #{userId}
+    </select>
+
+    <select id="getUserByName" resultMap="baseUserInfoMap">
+        select * from cs_user where user_name = #{userName}
+    </select>
+</mapper>

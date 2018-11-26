@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.codesheep.springbt_jwt_mybatis.mapper.RoleMapper">
+    <resultMap id="baseRoleMap" type="cn.codesheep.springbt_jwt_mybatis.entity.Role">
+        <id property="roleId" column="role_id" javaType="java.lang.Long"></id>
+        <result property="roleCode" column="role_code" javaType="java.lang.String"></result>
+        <result property="roleName" column="role_name" javaType="java.lang.String"></result>
+        <result property="roleDes" column="role_des" javaType="java.lang.String"></result>
+    </resultMap>
+
+    <select id="getRoleByRoleCode" resultMap="baseRoleMap">
+        select * from cs_role where role_code = #{roleCode}
+    </select>
+
+</mapper>
