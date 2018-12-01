@@ -1,0 +1,10 @@
+server:
+  port: 8086
+
+elasticsearch:
+  host: 192.168.199.75
+  httpport: 9200
+  tcpport: 9300
+  cluster:
+    name: codesheep
+  docfields: title,filecontent
