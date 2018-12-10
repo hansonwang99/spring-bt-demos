@@ -1,0 +1,11 @@
+server:
+  port: 8088
+
+aliyun:
+  oss:
+    project-name: bn
+    access-id: LTAIOAX7TfUG6FMO
+    access-key: 8AY0jIArnvyX4UVPgYJo1PueTub7vX
+    bucket: tuku-test
+    endpoint: http://oss-cn-shanghai.aliyuncs.com
+    expire: 0
