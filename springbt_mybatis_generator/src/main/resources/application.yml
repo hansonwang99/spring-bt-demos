@@ -1,0 +1,48 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    name: dataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      name: dataSource
+      url: jdbc:mysql://121.196.213.145:3306/demo?useUnicode=true&characterEncoding=utf8&autoReconnect=true&useOldAliasMetadataBehavior=true&connectionCollation=utf8mb4_unicode_ci&rewriteBatchedStatements=true&serverTimezone=UTC
+      username: root
+      password: 111111
+      driver-class-name: com.mysql.jdbc.Driver
+      filters: stat,wall
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000;druid.stat.logSlowSql=true
+      filter:
+        stat:
+          enabled: true
+          db-type: mysql
+          merge-sql: true
+          log-slow-sql: true
+          slow-sql-millis: 2000
+        wall:
+          enabled: true
+          db-type: mysql
+          config:
+            truncate-allow: false
+            create-table-allow: false
+            alter-table-allow: false
+            drop-table-allow: false
+
+mybatis:
+  #  type-aliases-package: com.jlwb.bn.model.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
