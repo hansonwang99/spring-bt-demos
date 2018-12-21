@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用户1</title>
+<script src="//cdn.bootcss.com/angular.js/1.5.6/angular.min.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script type="text/javascript">
+	/*<![CDATA[*/
+
+	var stompClient = null;
+
+	var app = angular.module('app', []);
+	app.controller('MainController', function($rootScope, $scope, $http) {
+
+		$scope.data = {
+			connected : false,  // 连接状态
+			message : '',       // 消息
+			rows : []
+		};
+
+		// 建立 ws连接
+		$scope.connect = function() {
+			var socket = new SockJS('/ws-endpoint');
+			stompClient = Stomp.over(socket);
+			var userId = 1;  // 标示用户1
+			stompClient.connect({}, function(frame) {
+
+                // 注册发送消息
+                stompClient.subscribe('/topic/send', function(msg) {
+                    $scope.data.rows.push(JSON.parse(msg.body));
+                    $scope.data.connected = true;
+                    $scope.$apply();
+                });
+
+			    // 注册发送消息
+				stompClient.subscribe( '/user/' + userId + '/user/send', function(msg) {
+					$scope.data.rows.push(JSON.parse(msg.body));
+					$scope.data.connected = true;
+					$scope.$apply();
+				});
+
+				// 注册定时消息
+				stompClient.subscribe('/topic/timer', function(r) {
+					$scope.data.time = '服务器实时时间：' + r.body;
+					$scope.data.connected = true;
+					$scope.$apply();
+				});
+
+				$scope.data.connected = true;
+				$scope.$apply();
+			});
+		};
+
+		$scope.disconnect = function() {
+			if (stompClient != null) {
+				stompClient.disconnect();
+			}
+			$scope.data.connected = false;
+		}
+
+		$scope.send = function() {
+			stompClient.send("/app/send", {}, JSON.stringify({
+				'message' : $scope.data.message
+			}));
+		}
+	});
+	/*]]>*/
+</script>
+</head>
+<body ng-app="app" ng-controller="MainController">
+
+	<div style="text-align: center">
+		<h4>
+			程序羊CodeSheep <a href="https://www.codesheep.cn/"> www.codesheep.cn/</a>
+		</h4>
+
+		<label>WS连接状态:</label>
+		<button type="button" ng-disabled="data.connected" ng-click="connect()">连接</button>
+		<button type="button" ng-click="disconnect()"
+				ng-disabled="!data.connected">断开</button>
+		<br />
+		<br />
+		<div ng-show="data.connected">
+			<label>{{data.time}}</label> <br /> <br /> <input type="text"
+															  ng-model="data.message" placeholder="请输入内容..." />
+			<button ng-click="send()" type="button">发送消息</button>
+			<br /> <br /> 消息列表： <br />
+			<table align="center" border="1" style="background-color:#00FF00">
+				<thead>
+				<tr>
+					<th>消息内容</th>
+					<th>时间</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="row in data.rows">
+					<td>{{row.message}}</td>
+					<td>{{row.date}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</body>
+</html>
